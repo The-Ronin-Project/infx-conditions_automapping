@@ -1,8 +1,8 @@
 import csv
-
+import json
 import requests
 
-INTERNAL_TOOLS_BASE_URL = "https://infx-internal.prod.projectronin.io"
+INTERNAL_TOOLS_BASE_URL = "http://127.0.0.1:5000"
 
 # Load CSV file
 # Add new codes to MDA Conditions Terminology V2 (terminology_uuid = d49cabaa-f31c-473c-a059-59b6b7ee2bb7)
@@ -23,17 +23,24 @@ def load_from_csv(filename):
                 "code": row["display"],
                 "display": row["code"],
                 "terminology_version_uuid": "d49cabaa-f31c-473c-a059-59b6b7ee2bb7",
-                "additional_data": row["additional_data"],
+                "additional_data": json.loads(row["additional_data"]),
             })
         return output
 
 
-if __name__ == "__main__":
+def main():
     new_codes = load_from_csv('mda_condiditions_export_13_mar_2023.csv')
     print(new_codes[0])
-    for new_code in new_codes:
+    print('Total codes:', len(new_codes))
+    for index, new_code in enumerate(new_codes[5000:]):
         # Post request to insert new code API
-        insert_new_code = requests.post(f'{INTERNAL_TOOLS_BASE_URL}/Terminology/new_code')
+        response = requests.post(f'{INTERNAL_TOOLS_BASE_URL}/terminology/new_code', json=[new_code])
+        print(index, new_code['code'], response)
+        if response.status_code == 400:
+            print(response.json())
+
+if __name__ == "__main__":
+    main()
 
 # Create a new version of the source value set (value_set_uuid = 'e3d3aa32-d3d7-45be-bbec-624649728560')
 # requests.post(f'{INTERNAL_TOOLS_BASE_URL}/ValueSets/e3d3aa32-d3d7-45be-bbec-624649728560/versions/new')
