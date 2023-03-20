@@ -1,6 +1,8 @@
 import requests
 import json
+from flask import Flask, jsonify, request, Response
 
+INTERNAL_TOOLS_BASE_URL = "https://infx-internal.prod.projectronin.io"
 SNOWSTORM_BASE_URL = "https://snowstorm.prod.projectronin.io/MAIN"
 
 def filter_non_snomed_codes(coding_array):
@@ -45,7 +47,7 @@ def get_preferred_term_and_fully_specified_name(filtered_array):
         first_item = pt_fsn_search["items"][0]
         pt = first_item["pt"]["term"]
         fsn = first_item["fsn"]["term"]
-        return fsn,pt
+        return fsn, pt
 
 
 def get_synonyms(filtered_array):
@@ -77,9 +79,26 @@ def check_match(client_display_text,list_of_names):
 
 def auto_map(filtered_array):
     #  call to add new item into terminology
+
+    if can_automap = True:
+        requests.post(f"{INTERNAL_TOOLS_BASE_URL}/terminology/new_code", json={
+
+        })
+        # if request.status_code == 400:
+
+
     #  does relevant concept map has version currently in draft
+
+
     #  if yes, add to map --> 1.create source concept 2.create mapping
+    # most recent version - if in draft, reject; if active, call create new version of value set from previous version
+
+
     # if no, create a new version in draft and add the concept
+        requests.post(f"{INTERNAL_TOOLS_BASE_URL}/ConceptMaps/actions/new_version_from_previous", json={
+
+        })
+
     pass
 
 def manual_map(filtered_array):
