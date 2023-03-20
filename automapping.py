@@ -10,6 +10,7 @@ SYNONYMS = {
 }
 
 def normalize_synonyms(text):
+    """Function to normalize synonyms in a given text"""
     words = text.split()
     normalized_words = [SYNONYMS.get(word.lower(), word) for word in words]
     return " ".join(normalized_words)
@@ -29,6 +30,7 @@ def get_concept_data(concept_id, branch="MAIN"):
     url = f"{API_BASE_URL}/{branch}/concepts/{concept_id}"
     response = requests.get(url)
 
+    # Process the API response
     if response.status_code == 200:
         concept_data = response.json()
         preferred_term = concept_data["pt"]["term"]
@@ -60,7 +62,7 @@ def get_concept_descriptions(concept_id, branch="MAIN"):
         descriptions_data = response.json()
         descriptions = descriptions_data["conceptDescriptions"]
         filtered_terms = [
-            desc['term'] for desc in descriptions
+            normalize_synonyms(desc['term']) for desc in descriptions
             if any(value in {"ACCEPTABLE", "PREFERRED"} for value in desc["acceptabilityMap"].values())
         ]
         return filtered_terms
@@ -68,7 +70,7 @@ def get_concept_descriptions(concept_id, branch="MAIN"):
         print(f"Error fetching descriptions for concept ID {concept_id}: {response.status_code}")
         return None
 
-
+# Main function to test the matching of input codes
 def main():
     input_codes = [
         {"code": "386661006", "display": "Fever", "expected_matched_reason": "EXACT"},
@@ -102,14 +104,17 @@ def main():
         fsn_for_matched_code = None
         matched_reason = None
 
+        # Check for exact messages
         if input_display == preferred_term or input_display == fully_specified_name:
             matched_code = code
             fsn_for_matched_code = get_concept_data(matched_code)[1]
             matched_reason = "EXACT"
         else:
             normalized_input_display = normalize_synonyms(input_display)
-            descriptions_to_check = [preferred_term, fully_specified_name] + concept_descriptions
+            descriptions_to_check = [normalize_synonyms(term) for term in
+                                     [preferred_term, fully_specified_name] + concept_descriptions]
 
+            # Check for synonym matches
             if any(normalized_input_display == description for description in descriptions_to_check):
                 matched_code = code
                 fsn_for_matched_code = get_concept_data(matched_code)[1]
