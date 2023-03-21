@@ -87,7 +87,6 @@ def main():
          "expected_matched_reason": "NORMALIZED DESCRIPTION"},
         {"code": "340491000119104", "display": "Hordeolum externum of left eyelid, not otherwise specified", "expected_matched_reason": "NORMALIZED DESCRIPTION"},
         {"code": "353511000119101", "display": "Primary malignant neoplasm of female right breast, not otherwise specified", "expected_matched_reason": "NORMALIZED DESCRIPTION"},
-        
     ]
 
     ignorable_strings = [", NOS", ", not otherwise specified"]
