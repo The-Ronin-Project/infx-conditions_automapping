@@ -177,7 +177,7 @@ def do_mapping(source_concept_uuid, code, display, matched_reason):
     requests.post(
         'https://infx-internal.prod.projectronin.io/mappings/',
         json={
-            "source_concept_uuid": source_concept_uuid,
+            "source_concept_uuid": str(source_concept_uuid),
             "relationship_code_uuid": "f2a20235-bd9d-4f6a-8e78-b3f41f97d07f",
             "target_concept_code": code,
             "target_concept_display": display,
@@ -189,24 +189,6 @@ def do_mapping(source_concept_uuid, code, display, matched_reason):
     print("Mapped:", code, '|', display, matched_reason, 'to source concept:', source_concept_uuid)
 
 def main():
-    # input_codes = [
-    #     {"code": "386661006", "display": "Fever", "expected_matched_reason": "EXACT"},
-    #     {"code": "422587007", "display": "Nausea", "expected_matched_reason": "EXACT"},
-    #     {"code": "386661006", "display": "Pyrexia", "expected_matched_reason": "SYNONYM"},
-    #     {"code": "94579000", "display": "Secondary malignant neoplasm of skin", "expected_matched_reason": "EXACT"},
-    #     {"code": "94579000", "display": "Secondary cancer of skin", "expected_matched_reason": "SYNONYM"},
-    #     {"code": "267036007", "display": "Shortness of breath", "expected_matched_reason": "SYNONYM"},
-    #     {"code": "399068003", "display": "Malignant tumor of prostate", "expected_matched_reason": "EXACT"},
-    #     {"code": "126926005", "display": "Neoplasm of breast (disorder)", "expected_matched_reason": "EXACT"},
-    #     {"code": "187725002", "display": "Malignant neoplasm of upper third of esophagus", "expected_matched_reason": "SYNONYM"},
-    #     {"code": "94602001", "display": "Secondary malignant neoplasm of vertebral column", "expected_matched_reason": "EXACT"},
-    #     {"code": "792907004", "display": "Adenocarcinoma, NOS of pancreatic duct", "expected_matched_reason": "NORMALIZED DESCRIPTION"},
-    #     {"code": "705176003", "display": "Secondary carcinoid tumor", "expected_matched_reason": "SYNONYM"},
-    #     {"code": "34713006", "display": "Vitamin D deficiency, not otherwise specified",
-    #      "expected_matched_reason": "NORMALIZED DESCRIPTION"},
-    #     {"code": "340491000119104", "display": "Hordeolum externum of left eyelid, not otherwise specified", "expected_matched_reason": "NORMALIZED DESCRIPTION"},
-    #     {"code": "353511000119101", "display": "Primary malignant neoplasm of female right breast, not otherwise specified", "expected_matched_reason": "NORMALIZED DESCRIPTION"},
-    # ]
     input_codes = get_concepts_to_automap()
 
     ignorable_strings = [", NOS", ", not otherwise specified"]
